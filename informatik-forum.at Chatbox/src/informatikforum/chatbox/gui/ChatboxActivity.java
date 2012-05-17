@@ -1,7 +1,13 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui;
 
+import informatikforum.chatbox.ClientCallback;
+import informatikforum.chatbox.MessageRetrieveService;
+import informatikforum.chatbox.R;
+import informatikforum.chatbox.business.BusinessLogic;
 import informatikforum.chatbox.business.BusinessLogicException;
-import informatikforum.chatbox.business.ChatboxBusinessLogic;
+import informatikforum.chatbox.business.ChatboxWrapperBusinessLogic;
+import informatikforum.chatbox.business.CommonData;
+import informatikforum.chatbox.business.Informant;
 import informatikforum.chatbox.entity.Message;
 
 import java.util.ArrayList;
@@ -21,7 +27,7 @@ import android.widget.ListView;
 
 public class ChatboxActivity extends Activity implements ClientCallback{
 
-	private ChatboxBusinessLogic cbl;
+	private BusinessLogic bl;
 	private Informant informant;
 	private ListView lv;
 	private MessageArrayAdapter maa;
@@ -65,13 +71,8 @@ public class ChatboxActivity extends Activity implements ClientCallback{
         // TODO should not be here.
 
 	    // Retrieve the BusinessLogic-instance.
-        try {
-			this.cbl = ChatboxBusinessLogic.getInstance();
-			this.cbl.setUserdata("USERNAME", "PASSWORD");
-		} catch (BusinessLogicException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.bl = BusinessLogic.getInstance();
+		this.bl.updateContext(this.getApplicationContext());
         
         // Register to informant.
         this.informant.registerClientCallback(this);
@@ -138,7 +139,7 @@ public class ChatboxActivity extends Activity implements ClientCallback{
     	@Override
     	protected String doInBackground(String... msg){
 	    	try {
-				cbl.postMessage(msg[0]);
+				bl.postMessage(msg[0]);
 			} catch (BusinessLogicException e) {
 				ex = e;
 			}

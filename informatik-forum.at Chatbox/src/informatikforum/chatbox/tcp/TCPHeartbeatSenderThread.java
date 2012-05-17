@@ -1,6 +1,6 @@
 package informatikforum.chatbox.tcp;
 
-import informatikforum.chatbox.Informant;
+import informatikforum.chatbox.business.Informant;
 
 public class TCPHeartbeatSenderThread extends Thread {
 	

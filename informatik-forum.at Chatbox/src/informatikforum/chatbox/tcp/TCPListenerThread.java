@@ -1,6 +1,6 @@
 package informatikforum.chatbox.tcp;
 
-import informatikforum.chatbox.Informant;
+import informatikforum.chatbox.business.Informant;
 
 import java.io.IOException;
 import java.util.Scanner;

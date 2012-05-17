@@ -1,4 +1,4 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui;
 
 import android.content.Context;
 import android.widget.LinearLayout;

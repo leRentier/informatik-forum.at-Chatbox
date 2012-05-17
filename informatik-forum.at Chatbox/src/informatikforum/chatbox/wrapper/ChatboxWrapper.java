@@ -1,7 +1,9 @@
 package informatikforum.chatbox.wrapper;
 
+import informatikforum.chatbox.R;
+import informatikforum.chatbox.business.BusinessLogic;
 import informatikforum.chatbox.entity.Message;
-import informatikforum.chatbox.utils.MessageFormatter;
+import informatikforum.chatbox.gui.MessageFormatter;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -32,8 +34,6 @@ import org.apache.http.util.EntityUtils;
 import android.util.Log;
 
 
-
-
 public class ChatboxWrapper{
 	
 	private static ChatboxWrapper instance = null;
@@ -41,46 +41,15 @@ public class ChatboxWrapper{
 	private static final String TAG = "ChatboxWrapper";
 
 	
-
-	// A word that will be contained in the html-site after a successful login.
-	// It is used to determine, if a login was successful.
-	private final String LOGGEDIN_WORD = "do=logout";
-	
-	// The URL the (login) post-request ist done to.
-	private final String POSTLOGIN_URL = "http://www.informatik-forum.at/login.php?do=login";
-	private final String POSTMESSAGE_URL = "http://www.informatik-forum.at/misc.php";
-	private final String MESSAGES_URL = "http://www.informatik-forum.at/misc.php?show=ccbmessages";
-	private final String LOGINCHECK_URL = "http://www.informatik-forum.at/faq.php";
-	private final String PATTERN_DATE = "yyyy-dd-MM, HH:mm";
-	private final String SECURITY_TOKEN_URL = "http://www.informatik-forum.at/faq.php";
-	
-	// Patterns for matching the required fields of each message.
-	private final String MESSAGE_PATTERN = "<td style=\"font-size:;vertical-align:bottom;\">(.*?)</td>";
-	private final String SECURITY_TOKEN_PATTERN = "SECURITYTOKEN.*?\"(.*?)\";";
-	private final String USER_PATTERN = "<a href=\"member\\.php\\?u=\\d+\">(.*?)</a>";
-	private final String TIMESTAMP_PATTERN = "/>\\s*</a>\\s*\\[(.*?)\\]\\s*</span";
-	private final String ID_PATTERN = "\\?ccbloc=(.*?)\"";
-	
-	// Strings for exceptions that are thrown.
-	private final String EXCEPTION_REDIRECTSETTING = "Exception while determining response contains a redirect.";
-	private final String EXCEPTION_LOGIN_FAILED = "Login failed (probably username or password are wrong, or the site changed, as there were no signs of exceptions occuring.";
-	private final String EXCEPTION_GETTING_CERTIFICATE_URL_FAILED = "GET-method for the certificate URL failed with an exception.";
-	private final String EXCEPTION_RETRIEVING_SOURCECODE = "An Exception while trying to retrieve the source of the specified site occured.";
-	private final String EXCEPTION_UNABLE_TO_RETRIEVE_PASSWORDHASH = "The given password couldn't be hashed.";
-	private final String EXCEPTION_CANT_FIND_MESSAGES = "A correct list of messages couldn't be found.";
-	private final String EXCEPTION_DATE_NOT_PARSABLE = "Couldn't parse the date into a usable value: ";
-	private final String EXCEPTION_SECURITYTOKEN_NOT_FOUND = "Couldn't find the securitytoken which is needed to perform any actions.";
-	private final String EXCEPTION_POST_FAILED = "Couldn't post the given message.";
-	private static final String EXCEPTION_POST_FAILED_RECEIVED_RESPONSE = "Couldn't post the given message.. Server response was non-empty, which means, an error happened (probably not logged in?).";
-
-	
 	private final HttpClient httpclient;
+	private final BusinessLogic bl;
 	
-	private ChatboxWrapper() throws WrapperException {
+	private ChatboxWrapper(){
 		this.httpclient = createHttpClient();
+		bl = BusinessLogic.getInstance();
 	}
 	
-	public static ChatboxWrapper getInstance() throws WrapperException{
+	public static ChatboxWrapper getInstance(){
 		if(instance == null){
 			instance = new ChatboxWrapper();
 		}
@@ -89,23 +58,15 @@ public class ChatboxWrapper{
 	}
 
 	
-	private HttpClient createHttpClient() throws WrapperException {
+	private HttpClient createHttpClient(){
 
 		// Get a http-client..
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 
-		try{
-
-			// Set the cookie-policy. This is important as cookies won't be sent in
-			// the second redirect
-			// using standard method.
-			httpclient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
-		}
-		
-		// Catch the runtime-exception and others here
-		catch(Exception e){
-			throw new WrapperException(EXCEPTION_REDIRECTSETTING, e);
-		}
+		// Set the cookie-policy. This is important as cookies won't be sent in
+		// the second redirect
+		// using standard method.
+		httpclient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 
 		return httpclient;
 	}
@@ -124,7 +85,7 @@ public class ChatboxWrapper{
 			return reloadSecurityTokenFromHtml(htmlSource);
 		}
 		catch(Exception e){
-			throw new WrapperException(EXCEPTION_SECURITYTOKEN_NOT_FOUND);	
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_SECURITYTOKEN_NOT_FOUND));	
 		}
 	}
 	
@@ -132,25 +93,25 @@ public class ChatboxWrapper{
 	public String reloadSecurityTokenFromHtml(String htmlString) throws WrapperException{
 		
 		try {
-			Pattern patToken = Pattern.compile(SECURITY_TOKEN_PATTERN);
+			Pattern patToken = Pattern.compile(bl.getString(R.string.SECURITY_TOKEN_PATTERN));
 			Matcher matToken = patToken.matcher(htmlString);
 			
 			if(matToken.find()){
 				return matToken.group(1);
 			}
 			else{
-				throw new WrapperException(EXCEPTION_SECURITYTOKEN_NOT_FOUND);
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_SECURITYTOKEN_NOT_FOUND));
 			}
 			
 			
 		} catch (Exception e){
-			throw new WrapperException(EXCEPTION_SECURITYTOKEN_NOT_FOUND, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_SECURITYTOKEN_NOT_FOUND), e);
 		}
 	}
 	
 	
 	public String reloadSecurityToken() throws WrapperException{
-		return reloadSecurityTokenFromUrl(this.SECURITY_TOKEN_URL);
+		return reloadSecurityTokenFromUrl(bl.getString(R.string.SECURITY_TOKEN_URL));
 	}
 	
 	
@@ -163,7 +124,7 @@ public class ChatboxWrapper{
 		
 		try {
 			// Get the messages..
-			pat = Pattern.compile(MESSAGE_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			pat = Pattern.compile(bl.getString(R.string.MESSAGE_PATTERN), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			matcher = pat.matcher(html);
 
 			messages = new ArrayList<Message>();
@@ -178,7 +139,7 @@ public class ChatboxWrapper{
 			}
 
 			// Get the users..
-			pat = Pattern.compile(USER_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			pat = Pattern.compile(bl.getString(R.string.USER_PATTERN), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			matcher = pat.matcher(html);
 			
 			cnt=0;
@@ -186,11 +147,11 @@ public class ChatboxWrapper{
 				messages.get(cnt).setUser(StringEscapeUtils.unescapeHtml4(matcher.group(1).replaceAll("<.*?>", "").trim()));
 			}
 			if((cnt == messages.size() && matcher.find()) || (cnt != messages.size())){
-				throw new WrapperException(EXCEPTION_CANT_FIND_MESSAGES);
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_FIND_MESSAGES));
 			}
 			
 			// Get the IDs..
-			pat = Pattern.compile(ID_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			pat = Pattern.compile(bl.getString(R.string.ID_PATTERN), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			matcher = pat.matcher(html);
 			
 			cnt=0;
@@ -199,11 +160,11 @@ public class ChatboxWrapper{
 				messages.get(cnt).setId(Long.parseLong(matcher.group(1).replaceAll("<.*?>", "").trim()));
 			}
 			if((cnt == messages.size() && matcher.find()) || (cnt != messages.size())){
-				throw new WrapperException(EXCEPTION_CANT_FIND_MESSAGES);
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_FIND_MESSAGES));
 			}
 			
 			// Get the timestamps..
-			pat = Pattern.compile(TIMESTAMP_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			pat = Pattern.compile(bl.getString(R.string.TIMESTAMP_PATTERN), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			matcher = pat.matcher(html);
 			
 			cnt=0;
@@ -211,16 +172,16 @@ public class ChatboxWrapper{
 				messages.get(cnt).setTimeStamp(parseDate(new GregorianCalendar().get(GregorianCalendar.YEAR) + "-" + matcher.group(1).replaceAll("<.*?>", "").trim()));
 			}
 			if((cnt == messages.size() && matcher.find()) || (cnt != messages.size())){
-				throw new WrapperException(EXCEPTION_CANT_FIND_MESSAGES);
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_FIND_MESSAGES));
 			}
 			
 			// There should be at least one message..
 			if(messages.size() <=0){
-				throw new WrapperException(EXCEPTION_CANT_FIND_MESSAGES);
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_FIND_MESSAGES));
 			}
 
 		} catch (Exception e) {
-			throw new WrapperException(EXCEPTION_CANT_FIND_MESSAGES, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_FIND_MESSAGES), e);
 		}
 
 		return messages;
@@ -228,18 +189,18 @@ public class ChatboxWrapper{
 	
 	
 	private Date parseDate(String dateString) throws WrapperException{
-		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_DATE);
+		SimpleDateFormat sdf = new SimpleDateFormat(bl.getString(R.string.PATTERN_DATE));
 		try {
 			return sdf.parse(dateString);
 		} catch (Exception e) {
-			throw new WrapperException(EXCEPTION_DATE_NOT_PARSABLE + dateString, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_DATE_NOT_PARSABLE) + dateString, e);
 		}
 	}
 
 	
 	public synchronized void postMessage(String encodedMessage) throws WrapperException{
 		try {
-			HttpPost httpost = new HttpPost(POSTMESSAGE_URL);
+			HttpPost httpost = new HttpPost(bl.getString(R.string.POSTMESSAGE_URL));
 			
 			// Set up a list with the necessary POST-name-value pairs.
 			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -260,13 +221,13 @@ public class ChatboxWrapper{
 			// Checking response (which should be empty)
 			Log.d(TAG, "Checking server response for posted message..");
 			if(!EntityUtils.toString(entity).equals("")){
-				Log.d(TAG, "Server response for post was not empty, which means, that the post has failed. Throw new Wrapper Exception with message: "  + EXCEPTION_POST_FAILED_RECEIVED_RESPONSE);
-				throw new WrapperException(EXCEPTION_POST_FAILED_RECEIVED_RESPONSE);
+				Log.d(TAG, "Server response for post was not empty, which means, that the post has failed. Throw new Wrapper Exception with message: "  + bl.getString(R.string.EXCEPTION_POST_FAILED_RECEIVED_RESPONSE));
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_POST_FAILED_RECEIVED_RESPONSE));
 			}
 			Log.d(TAG, "Server response for post was ok (empty).");
 		}
 		catch (Exception e) {
-			throw new WrapperException(EXCEPTION_POST_FAILED, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_POST_FAILED), e);
 		}
 	}
 	
@@ -283,10 +244,10 @@ public class ChatboxWrapper{
 		
 		// Navigate to the messages-site.
 		try {
-			httpGet = new HttpGet(MESSAGES_URL);
+			httpGet = new HttpGet(bl.getString(R.string.MESSAGES_URL));
 			response = httpclient.execute(httpGet);
 		} catch (Exception e){
-			throw new WrapperException(EXCEPTION_GETTING_CERTIFICATE_URL_FAILED, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_GETTING_CERTIFICATE_URL_FAILED), e);
 		}
 		
 		// If retrieving the response was successfull, parse the content for messages..
@@ -296,7 +257,7 @@ public class ChatboxWrapper{
 			
 			lvas = this.parseMessagesFromHtml(htmlSource);
 		} catch (Exception e){
-			throw new WrapperException(EXCEPTION_RETRIEVING_SOURCECODE, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_RETRIEVING_SOURCECODE), e);
 		}
 		
 		return lvas;
@@ -309,7 +270,7 @@ public class ChatboxWrapper{
 		try {
 			m = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			throw new WrapperException(EXCEPTION_UNABLE_TO_RETRIEVE_PASSWORDHASH, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_UNABLE_TO_RETRIEVE_PASSWORDHASH), e);
 		}
 	
 		m.update(s.getBytes(),0,s.length());
@@ -322,7 +283,7 @@ public class ChatboxWrapper{
 		
 		// As there can go very much wrong, a bigger try-block catching 'Exception'.
 		try {
-			HttpPost httpost = new HttpPost(POSTLOGIN_URL);
+			HttpPost httpost = new HttpPost(bl.getString(R.string.POSTLOGIN_URL));
 			
 			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 			nvps.add(new BasicNameValuePair("vb_login_username", username));
@@ -344,7 +305,7 @@ public class ChatboxWrapper{
 			return isLoggedIn();
 		}
 		catch(Exception e){
-			throw new WrapperException(EXCEPTION_LOGIN_FAILED, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_LOGIN_FAILED), e);
 		}
 	}
 	
@@ -353,14 +314,14 @@ public class ChatboxWrapper{
 		HttpGet httpGet;
 		
 		try {
-			httpGet = new HttpGet(LOGINCHECK_URL);
+			httpGet = new HttpGet(bl.getString(R.string.LOGINCHECK_URL));
 			response = httpclient.execute(httpGet);
 			String responseString = EntityUtils.toString(response.getEntity());
 			response.getEntity().consumeContent();
 
-			return responseString.contains(LOGGEDIN_WORD);
+			return responseString.contains(bl.getString(R.string.LOGGEDIN_WORD));
 		} catch (Exception e){
-			throw new WrapperException(EXCEPTION_GETTING_CERTIFICATE_URL_FAILED, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_GETTING_CERTIFICATE_URL_FAILED), e);
 		}
 	}
 	

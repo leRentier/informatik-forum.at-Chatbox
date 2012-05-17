@@ -1,6 +1,8 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.business;
 
 import informatikforum.chatbox.entity.Message;
+import informatikforum.chatbox.gui.gif.AnimatedGifDrawable;
+import informatikforum.chatbox.gui.gif.AnimatedImageSpan;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

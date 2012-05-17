@@ -1,5 +1,7 @@
 package informatikforum.chatbox;
 
+import informatikforum.chatbox.business.BusinessLogic;
+
 import java.util.concurrent.Semaphore;
 
 
@@ -21,10 +23,11 @@ public class BinarySemaphore extends Semaphore{
 			return permits;
 		}
 		else{
-			throw new IllegalArgumentException("Permits must be 0 or 1.");
+			throw new IllegalArgumentException(BusinessLogic.getInstance().getString(R.string.EXCEPTION_WRONG_NUMBER_OF_PERMITS));
 		}
 	}
 	
+	@Override
 	public void release(){
 		if(this.availablePermits() < 1){
 			super.release();

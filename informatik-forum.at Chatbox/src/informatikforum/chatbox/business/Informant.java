@@ -1,4 +1,7 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.business;
+
+import informatikforum.chatbox.ClientCallback;
+import informatikforum.chatbox.ServerCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;

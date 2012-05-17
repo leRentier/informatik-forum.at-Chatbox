@@ -11,10 +11,10 @@ import java.util.HashSet;
 import org.apache.commons.codec.binary.Base64;
 
 import android.util.Log;
-import informatikforum.chatbox.AnimatedGifDrawable;
-import informatikforum.chatbox.Informant;
+import informatikforum.chatbox.business.Informant;
 import informatikforum.chatbox.entity.Message;
 import informatikforum.chatbox.entity.Smiley;
+import informatikforum.chatbox.gui.gif.AnimatedGifDrawable;
 
 public class TCPWorkerThread extends Thread{
 	
@@ -72,7 +72,7 @@ public class TCPWorkerThread extends Thread{
 
 					// Add smileys to buffering list..
 					for(Smiley s : m.getSmileys().values()){
-						if(!informatikforum.chatbox.CommonData.getInstance().getBufferedGifs().containsKey(s.getImageId())){
+						if(!informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().containsKey(s.getImageId())){
 							smileyIds.add(s.getImageId());
 						}
 					}
@@ -94,11 +94,11 @@ public class TCPWorkerThread extends Thread{
 						public void run() {
 							
 							Log.d(TAG, "Retrieving animated gif and put it inside gifBuffer in CommonData.");
-							informatikforum.chatbox.CommonData.getInstance().getBufferedGifs().put(i, new AnimatedGifDrawable(informatikforum.chatbox.CommonData.getInstance().getContext().getResources().openRawResource(i)));
+							informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().put(i, new AnimatedGifDrawable(informatikforum.chatbox.business.CommonData.getInstance().getContext().getResources().openRawResource(i)));
 						
 							Log.d(TAG, "Notify waiting threads about the newly buffered gif.");
-							synchronized(informatikforum.chatbox.CommonData.getInstance().getGifLock()){	
-								informatikforum.chatbox.CommonData.getInstance().getGifLock().notifyAll();
+							synchronized(informatikforum.chatbox.business.CommonData.getInstance().getGifLock()){	
+								informatikforum.chatbox.business.CommonData.getInstance().getGifLock().notifyAll();
 							}
 							
 						}
@@ -107,7 +107,7 @@ public class TCPWorkerThread extends Thread{
 				}
 			
 				Log.d(TAG, "Add new messages to the messages stored in CommonData. There are " + newMessages.size() + " new messages.");
-				informatikforum.chatbox.CommonData.getInstance().addMessages(newMessages);
+				informatikforum.chatbox.business.CommonData.getInstance().addMessages(newMessages);
 				
 				Log.d(TAG, "Tell the Informant to notify all clients, that we have a message update.");
 				inf.clientNotifyMessageUpdate();

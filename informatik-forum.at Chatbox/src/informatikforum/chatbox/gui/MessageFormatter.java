@@ -1,13 +1,15 @@
-package informatikforum.chatbox.utils;
+package informatikforum.chatbox.gui;
 
-import informatikforum.chatbox.AnimatedGifDrawable;
-import informatikforum.chatbox.AnimatedGifDrawable.UpdateListener;
-import informatikforum.chatbox.AnimatedImageSpan;
-import informatikforum.chatbox.CommonData;
-import informatikforum.chatbox.dao.CSVSmileyDao;
+import informatikforum.chatbox.R;
+import informatikforum.chatbox.business.BusinessLogic;
+import informatikforum.chatbox.business.CommonData;
+import informatikforum.chatbox.dao.SmileyData;
 import informatikforum.chatbox.dao.DaoException;
 import informatikforum.chatbox.entity.Message;
 import informatikforum.chatbox.entity.Smiley;
+import informatikforum.chatbox.gui.gif.AnimatedGifDrawable;
+import informatikforum.chatbox.gui.gif.AnimatedImageSpan;
+import informatikforum.chatbox.gui.gif.AnimatedGifDrawable.UpdateListener;
 import informatikforum.chatbox.wrapper.WrapperException;
 
 import java.util.ArrayList;
@@ -15,8 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import android.app.Application;
 import android.text.Spannable;
@@ -27,13 +27,9 @@ import android.widget.TextView;
 
 public class MessageFormatter extends Application{
 	
-	private static final String EXCEPTION_CANT_ENCODE_MESSAGE = "Couldn't encode the given message with smileys, links etc.";
-	private static final String EXCEPTION_CANT_DECODE_MESSAGE = "Couldn't decode the given message into smileys, links etc.";
-	
-	private static final String SMILEY_PATTERN = "<img src=\"(.*?.gif)\".*?/>";
-	private static final String LINK_PATTERN = "<a href=\"(.*?)\".*?</a>";
-	private static final String HOST_URL = "http://www.informatik-forum.at";
+
 	private static CommonData cd = CommonData.getInstance();
+	private static BusinessLogic bl = BusinessLogic.getInstance();
 	
 	public static String encodeMessage(Message m) throws WrapperException{
 
@@ -60,7 +56,7 @@ public class MessageFormatter extends Application{
 			}
 		}
 		catch (Exception e) {
-			throw new WrapperException(EXCEPTION_CANT_ENCODE_MESSAGE, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_ENCODE_MESSAGE), e);
 		}
 
 		return rawString;
@@ -70,8 +66,8 @@ public class MessageFormatter extends Application{
 	public static void decodeMessage(String rawString, Message m) throws DaoException, WrapperException{
 
 		try{
-			Pattern patSmiley = Pattern.compile(SMILEY_PATTERN);
-			Pattern patLink = Pattern.compile(LINK_PATTERN);
+			Pattern patSmiley = Pattern.compile(bl.getString(R.string.SMILEY_PATTERN));
+			Pattern patLink = Pattern.compile(bl.getString(R.string.LINK_PATTERN));
 			Matcher matSmiley;
 			Matcher matLink;
 	
@@ -82,7 +78,7 @@ public class MessageFormatter extends Application{
 				matLink = patLink.matcher(substi);
 				
 				if(matSmiley.find()){
-					m.getSmileys().put(matSmiley.start(), CSVSmileyDao.getInstance().getSmileyByUrl(HOST_URL + "/" + matSmiley.group(1))); //TODO refine?
+					m.getSmileys().put(matSmiley.start(), SmileyData.getInstance().getSmileyByUrl(bl.getString(R.string.HOST_URL) + "/" + matSmiley.group(1))); //TODO refine?
 					rawString = rawString.substring(0, matSmiley.start()) + Smiley.PLACEHOLDER + rawString.substring(matSmiley.end());
 					i=0;
 				}
@@ -95,91 +91,8 @@ public class MessageFormatter extends Application{
 			m.setMessage(rawString);
 		}
 		catch (Exception e) {
-			throw new WrapperException(EXCEPTION_CANT_DECODE_MESSAGE, e);
+			throw new WrapperException(bl.getString(R.string.EXCEPTION_CANT_DECODE_MESSAGE), e);
 		}
-	}
-	
-	public static String getHtmlRepresentationForMessageList(List<Message> ml) throws WrapperException{
-		String result = "<html><body><table border=\"1px\" style=\"width: 100% word-wrap:break-word\">";
-		
-		for(int i=0; i<ml.size()-1; i++){
-			result += getHtmlRepresentationForMessage(ml.get(i));
-		}
-		
-		if(ml.size()!=0){
-			result += getHtmlRepresentationForMessage(ml.get(ml.size()-1));
-		}
-		
-		result += "</table></body></html>";
-System.err.println(result);
-		return result;
-	}
-	
-	public static String getHtmlRepresentationForMessage(Message m) throws WrapperException{
-		String rawString = m.getMessage();
-		
-		// Add smileys and links to the textmessage.
-		try{
-			List<Integer> smileyPositions ;
-			List<Integer> linkPositions;
-			
-			ArrayList<Integer> positions;
-			
-			for(int i=0; i<rawString.length(); i++){
-				char c = rawString.charAt(i);
-				String escapeSeq = StringEscapeUtils.escapeHtml4(String.valueOf(c));
-				int lengthExtension = escapeSeq.length()-1;
-				
-				if(lengthExtension > 0){
-					for(Integer k: m.getSmileys().keySet()){
-						if(k>i){
-							Smiley s = m.getSmileys().get(k);
-							m.getSmileys().remove(k);
-							m.getSmileys().put(k+lengthExtension, s);
-						}
-					}
-					
-					for(Integer k: m.getLinks().keySet()){
-						if(k>i){
-							String s = m.getLinks().get(k);
-							m.getLinks().remove(k);
-							m.getLinks().put(k+lengthExtension, s);
-						}
-					}
-				}
-				
-				rawString = rawString.substring(0,i) + escapeSeq + rawString.substring(i+1,rawString.length());
-				i+=lengthExtension;
-			}
-			
-			smileyPositions = new ArrayList<Integer>(m.getSmileys().keySet());			
-			linkPositions = new ArrayList<Integer>(m.getLinks().keySet());
-			
-			positions = new ArrayList<Integer>();
-			positions.addAll(linkPositions);
-			positions.addAll(smileyPositions);
-
-			Collections.sort(positions);
-			Collections.reverse(positions);	
-			
-			for(Integer i: positions){
-				if(smileyPositions.contains(i)){
-					rawString = rawString.substring(0,i) + "<img src=\"" + m.getSmileys().get(i).getUrl() + "\" title=\"" + m.getSmileys().get(i).getUrl() + "\"/>" + rawString.substring(i+1);
-				}
-				else if(linkPositions.contains(i)){
-					rawString = rawString.substring(0,i) + "<a href=\"" + m.getLinks().get(i) + "\">" + m.getLinks().get(i) + "</a>" + rawString.substring(i+1);
-				}
-			}
-		}
-		catch (Exception e) {
-			throw new WrapperException(EXCEPTION_CANT_ENCODE_MESSAGE, e);
-		}
-
-		rawString = "<tr valign=\"top\"><td style=\"white-space: nowrap; width: 1px\"><b>" + m.getUser() + "</b></td>"
-		+ "<td>" + cd.getSimpleDateFormat().format(m.getTimeStamp()) + "</td></tr>"
-		+ "<tr style=\"word-wrap:break-word\"><td colspan=\"2\" style=\"word-wrap:break-word\">" + rawString + "</td></tr>";
-		
-		return rawString;
 	}
 
 	
@@ -287,6 +200,6 @@ System.err.println(result);
 			}
 
 		return ssb;
-}
+	}
 
 }

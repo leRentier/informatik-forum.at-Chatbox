@@ -2,7 +2,7 @@ package informatikforum.chatbox.tcp;
 
 import java.net.Socket;
 
-import informatikforum.chatbox.Informant;
+import informatikforum.chatbox.business.Informant;
 
 public class TCPCommunicationThread extends Thread{
 	

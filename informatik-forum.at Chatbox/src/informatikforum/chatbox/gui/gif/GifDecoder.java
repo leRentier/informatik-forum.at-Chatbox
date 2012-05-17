@@ -1,4 +1,4 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui.gif;
 
 import java.io.InputStream;
 import java.util.Vector;
