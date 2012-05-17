@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Informatik-forum.at Chatbox</string>
+    <string name="button_send_text">Senden</string>
+    <string name="error_posting_message">Unbekannter Fehler beim Senden der Nachricht aufgetreten.</string>
+    <string name="error_retrieving_message">Unbekannter Fehler beim Empfangen neuer Nachrichten aufgetreten.</string>
+    <string name="retrieving_tries_left"> Versuche, bis das Laden neuer Nachrichten aufgegeben wird: </string>
+    <string name="error">Fehler</string>
+
+</resources>
