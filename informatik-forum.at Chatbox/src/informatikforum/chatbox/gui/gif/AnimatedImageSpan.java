@@ -1,4 +1,4 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui.gif;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

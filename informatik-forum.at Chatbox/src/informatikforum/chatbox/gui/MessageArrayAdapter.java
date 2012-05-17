@@ -1,9 +1,10 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui;
 
 import java.util.List;
 
+import informatikforum.chatbox.R;
+import informatikforum.chatbox.business.CommonData;
 import informatikforum.chatbox.entity.Message;
-import informatikforum.chatbox.utils.MessageFormatter;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -15,14 +16,11 @@ import android.widget.TextView.BufferType;
 
 public class MessageArrayAdapter extends ArrayAdapter<Message>{
 	
-	@SuppressWarnings("unused")
-	private Context context;
 	private List<Message> messages;
 	private CommonData cd;
 	
 	public MessageArrayAdapter(Context context, int textViewResourceId, List<Message> messages){
 		super(context, textViewResourceId, messages);
-		this.context = context;
 		this.messages = messages;
 		this.cd = CommonData.getInstance();
 	}

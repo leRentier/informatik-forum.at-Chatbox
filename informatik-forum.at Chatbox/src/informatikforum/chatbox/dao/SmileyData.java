@@ -15,7 +15,7 @@ import java.util.List;
  * @author emptyvi
  * @version 1.0.0
  */
-public class CSVSmileyDao implements SmileyDao{
+public class SmileyData{
 	
 
 	private final String EXCEPTION_SMILEY_NOT_FOUND = "The requested smiley can't be found in the smiley-data.";
@@ -29,16 +29,14 @@ public class CSVSmileyDao implements SmileyDao{
 	 * The only instance of this class.
 	 * Used for the Singleton-pattern.
 	 */
-	private static CSVSmileyDao instance = null;
+	private static SmileyData instance = null;
 	
 	
 	/**
 	 * Private constructor.
 	 * Used for Singleton-pattern.
-	 * 
-	 * @throws DaoException if anything goes wrong while initializing.
 	 */
-	private CSVSmileyDao() throws DaoException{
+	private SmileyData(){
 		smileys = readInSmileys();
 	}
 	
@@ -47,22 +45,15 @@ public class CSVSmileyDao implements SmileyDao{
 	 * Returns the only instance of this class.
 	 * Used for the Singleton-pattern.
 	 */
-	public static CSVSmileyDao getInstance() throws DaoException{
+	public static SmileyData getInstance() throws DaoException{
 		if(instance == null){
-			instance = new CSVSmileyDao();
+			instance = new SmileyData();
 		}
 		
 		return instance;
 	}
 	
-	
-	/**
-	 * Load smileys from CSV-file and save them in an ArrayList.
-	 * 
-	 * @throws DaoException Will be thrown, if something goes wrong while reading in the
-	 * smiley-properties
-	 */
-	private ArrayList<Smiley> readInSmileys() throws DaoException{
+	private ArrayList<Smiley> readInSmileys(){
 		
 		ArrayList<Smiley> smileys = new ArrayList<Smiley>();
 		
@@ -153,13 +144,11 @@ public class CSVSmileyDao implements SmileyDao{
 	}
 	
 	
-	@Override
 	public List<Smiley> getAvailableSmileys(){
 		return this.smileys;
 	}
 
 	
-	@Override
 	public Smiley getSmileyByUrl(String url) throws DaoException {
 		List<Smiley> smileys = getAvailableSmileys();
 		

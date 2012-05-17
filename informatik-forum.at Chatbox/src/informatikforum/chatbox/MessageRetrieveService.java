@@ -1,5 +1,6 @@
 package informatikforum.chatbox;
 
+import informatikforum.chatbox.business.Informant;
 import informatikforum.chatbox.entity.Message;
 import informatikforum.chatbox.tcp.TCPCommunicationThread;
 
@@ -86,8 +87,6 @@ public class MessageRetrieveService extends Service implements ServerCallback{
 	@Override
 	public void serverRaiseNormalError(Exception e) {
 		// TODO Auto-generated method stub
-		
-e.printStackTrace();
 		
 	}
 

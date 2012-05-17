@@ -1,4 +1,6 @@
-package informatikforum.chatbox;
+package informatikforum.chatbox.gui.gif;
+
+import informatikforum.chatbox.business.CommonData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
