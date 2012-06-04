@@ -1,6 +1,7 @@
 package informatikforum.chatbox.business;
 
 import informatikforum.chatbox.entity.Message;
+import informatikforum.chatbox.gui.LinkSpan;
 import informatikforum.chatbox.gui.gif.AnimatedGifDrawable;
 import informatikforum.chatbox.gui.gif.AnimatedImageSpan;
 
@@ -20,6 +21,7 @@ public class CommonData {
 	private SimpleDateFormat sdf;
 	private Context context;
 	private ConcurrentHashMap<Integer, AnimatedGifDrawable> bufferedGifs;
+	private ConcurrentHashMap<String, LinkSpan> bufferedClickSpannables;
 	private float smileyScale;
 	private Object gifLock;
 	private ArrayList<String> bufferedUpdateListeners;
@@ -39,6 +41,7 @@ public class CommonData {
 		gifLock = new Object();
 		bufferedUpdateListeners = new ArrayList<String>();
 		bufferedAnimatedImageSpannables = new ConcurrentHashMap<String, AnimatedImageSpan>();
+		bufferedClickSpannables = new ConcurrentHashMap<String, LinkSpan>();
 	}
 	
 	
@@ -132,6 +135,18 @@ public class CommonData {
 
 	public ConcurrentHashMap<String, AnimatedImageSpan> getBufferedAnimatedImageSpannables() {
 		return this.bufferedAnimatedImageSpannables;
+	}
+
+
+
+	public ConcurrentHashMap<String, LinkSpan> getBufferedClickSpannables() {
+		return bufferedClickSpannables;
+	}
+
+
+
+	public void setBufferedClickSpannables(ConcurrentHashMap<String, LinkSpan> bufferedClickSpannables) {
+		this.bufferedClickSpannables = bufferedClickSpannables;
 	}
 
 }

@@ -7,12 +7,16 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
 
 public class BusinessLogic {
 
 	private static BusinessLogic instance = null;
 	
 	private Context context;
+
+	private Handler linkHandler;
 
 	
 	private BusinessLogic(){
@@ -81,5 +85,18 @@ public class BusinessLogic {
 	
 	private String getPassword(){
 		return "PASSWORD";
+	}
+
+	public void openLink(String url) {
+		android.os.Message message = android.os.Message.obtain();
+		Bundle bundle = new Bundle();
+		bundle.putString("url", url);
+		message.setData(bundle);
+		linkHandler.dispatchMessage(message);
+	}
+
+
+	public void registerLinkHandler(Handler linkHandler) {
+		this.linkHandler = linkHandler;
 	}
 }
