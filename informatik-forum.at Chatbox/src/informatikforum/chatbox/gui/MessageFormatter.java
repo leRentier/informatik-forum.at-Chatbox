@@ -14,6 +14,7 @@ import informatikforum.chatbox.wrapper.WrapperException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,6 +118,8 @@ public class MessageFormatter extends Application{
 			Collections.sort(positions);
 			Collections.reverse(positions);	
 			
+			HashMap<String, Integer> linkOccurrences = new HashMap<String, Integer>();
+			
 			for(Integer i: positions){
 				if(smileyPositions.contains(i)){
 					
@@ -195,11 +198,39 @@ public class MessageFormatter extends Application{
 					
 				}
 				else if(linkPositions.contains(i)){
-					//rawString = rawString.substring(0,i) + "<a href=\"" + m.getLinks().get(i) + "\">" + m.getLinks().get(i) + "</a>" + rawString.substring(i+1);
+					String url = m.getLinks().get(i);
+					
+					// We need to create a new LinkSpan object for each URL.
+					// To avoid creating new objects whenever the messages are updated,
+					// already created objects will be cached in CommonData.
+					// Unfortunately, one LinkSpan can not be used more than once
+					// within the same Spannable (I don't know why, but if the same URL
+					// occurs twice within a message, only the first occurrence will be
+					// highlighted if the same LinkSpan object is used for both occurrences).
+					// As a workaround, the occurrences of each URL in a message will be
+					// numbered. The map linkOccurrences stores how often which URL has
+					// already been processed in the message currently being formatted. 
+					int occurrence = 1;
+					if(linkOccurrences.containsKey(url)) {
+						occurrence = linkOccurrences.get(url) + 1;
+					}
+					linkOccurrences.put(url, occurrence);
+					
+					LinkSpan cs;
+					if(cd.getBufferedClickSpannables().containsKey(url + occurrence)) {
+						cs = cd.getBufferedClickSpannables().get(url + occurrence);
+					}
+					else {
+						cs = new LinkSpan(bl, url);
+						cd.getBufferedClickSpannables().put(url + occurrence, cs); 
+					}
+					ssb.setSpan(cs, i, i+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					
+					// TODO use the link text instead of the URL here (requires server-side change?)
+					ssb.replace(i, i+1, url);
 				}
 			}
 
 		return ssb;
 	}
-
 }

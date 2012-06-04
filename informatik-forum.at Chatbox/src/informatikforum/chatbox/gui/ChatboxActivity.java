@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,6 +48,17 @@ public class ChatboxActivity extends Activity implements ClientCallback{
         }
     };
 
+    final Handler linkHandler = new Handler() {
+		
+		@Override
+        public void handleMessage(android.os.Message msg) {
+			String url = msg.getData().getString("url");
+			Log.d(TAG, "Opening URL: " + url);
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+			startActivity(browserIntent);		
+        }
+    };
+    
     /**
      * Called when the activity is created.
      */
@@ -73,6 +85,7 @@ public class ChatboxActivity extends Activity implements ClientCallback{
 	    // Retrieve the BusinessLogic-instance.
 		this.bl = BusinessLogic.getInstance();
 		this.bl.updateContext(this.getApplicationContext());
+        this.bl.registerLinkHandler(linkHandler);
         
         // Register to informant.
         this.informant.registerClientCallback(this);
