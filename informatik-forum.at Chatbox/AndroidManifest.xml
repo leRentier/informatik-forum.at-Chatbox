@@ -29,6 +29,7 @@
             </intent-filter>
         </activity>
         <service android:name=".MessageRetrieveService" />
+        <activity android:label="@string/settings" android:name=".gui.Settings"></activity>
     </application>
 
 </manifest>

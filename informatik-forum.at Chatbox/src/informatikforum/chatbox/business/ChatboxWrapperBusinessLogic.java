@@ -17,8 +17,6 @@ public class ChatboxWrapperBusinessLogic {
 	private BusinessLogic bl;
 
 	private static ChatboxWrapperBusinessLogic instance = null;
-	private String username = "unset";
-	private String password = "unset";
 	
 
 	public synchronized ArrayList<Message> retrieveMessages() throws BusinessLogicException{
@@ -41,7 +39,7 @@ public class ChatboxWrapperBusinessLogic {
 				}
 				else{
 					Log.d(TAG, "Currently not logged in. Trying to log in again..");
-					this.cbWrapper.logIn(this.username, this.password);
+					this.cbWrapper.logIn(bl.getUsername(), bl.getPassword());
 					Log.d(TAG, "Successfully logged in again.");
 				}
 			} catch (Exception e1) {
@@ -95,7 +93,7 @@ public class ChatboxWrapperBusinessLogic {
 				}
 				else{
 					Log.d(TAG, "Currently not logged in. Trying to log in again..");
-					this.cbWrapper.logIn(this.username, this.password);
+					this.cbWrapper.logIn(bl.getUsername(), bl.getPassword());
 
 					Log.d(TAG, "Successfully logged in again.");
 				}
@@ -135,7 +133,7 @@ public class ChatboxWrapperBusinessLogic {
 				}
 				else{
 					Log.d(TAG, "Currently not logged in. Trying to log in again..");
-					this.cbWrapper.logIn(this.username, this.password);
+					this.cbWrapper.logIn(bl.getUsername(), bl.getPassword());
 					Log.d(TAG, "Successfully logged in again.");
 				}
 			} catch (Exception e1) {
@@ -158,12 +156,7 @@ public class ChatboxWrapperBusinessLogic {
 		}
 	}
 
-	public void setUserdata(String username, String password) {
-		this.username = username;
-		this.password = password;
-	}
-
-	public boolean checkUserdata() throws BusinessLogicException{
+	public boolean checkUserdata() {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -7,8 +7,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 
 public class BusinessLogic {
 
@@ -18,6 +20,7 @@ public class BusinessLogic {
 
 	private Handler linkHandler;
 
+	private SharedPreferences preferences;
 	
 	private BusinessLogic(){
 
@@ -28,12 +31,12 @@ public class BusinessLogic {
 		if(instance == null){
 			instance = new BusinessLogic();
 		}
-
 		return instance;
 	}
 	
 	public void updateContext(Context context){
 		this.context = context;
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	
 	
@@ -78,13 +81,13 @@ public class BusinessLogic {
 	}
 
 
-	private String getUsername(){
-		return "USERNAME";
+	public String getUsername() {
+		return preferences.getString("settings_username", "");
 	}
 	
 	
-	private String getPassword(){
-		return "PASSWORD";
+	public String getPassword(){
+		return preferences.getString("settings_password", "");
 	}
 
 	public void openLink(String url) {
@@ -98,5 +101,10 @@ public class BusinessLogic {
 
 	public void registerLinkHandler(Handler linkHandler) {
 		this.linkHandler = linkHandler;
+	}
+
+
+	public boolean isConfigured() {
+		return preferences.getBoolean("configured", false);
 	}
 }

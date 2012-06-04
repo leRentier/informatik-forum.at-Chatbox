@@ -5,7 +5,6 @@ import informatikforum.chatbox.MessageRetrieveService;
 import informatikforum.chatbox.R;
 import informatikforum.chatbox.business.BusinessLogic;
 import informatikforum.chatbox.business.BusinessLogicException;
-import informatikforum.chatbox.business.ChatboxWrapperBusinessLogic;
 import informatikforum.chatbox.business.CommonData;
 import informatikforum.chatbox.business.Informant;
 import informatikforum.chatbox.entity.Message;
@@ -14,12 +13,16 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,6 +41,7 @@ public class ChatboxActivity extends Activity implements ClientCallback{
 	private int newMessageIndex;
 	private  EditText messageInputField;
 
+	private ChatboxActivity _this;
 	
 	final Handler handler = new Handler() {
 		
@@ -64,6 +68,7 @@ public class ChatboxActivity extends Activity implements ClientCallback{
      */
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+		_this = this;
 		
 		ArrayList<Message> messagesAtStart;
         final Button buttonSend;
@@ -118,10 +123,47 @@ public class ChatboxActivity extends Activity implements ClientCallback{
 
         });
         
+    	if(!bl.isConfigured()) {
+    		AlertDialog alertDialog = new AlertDialog.Builder(_this).create();
+    		alertDialog.setTitle("Welcome");
+    		alertDialog.setMessage("This is the first time you run this app. You will have to configure it in order to use it.");
+    		alertDialog.setButton("Ok", new android.content.DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+    				dialog.dismiss();
+    				Intent intent = new Intent(_this, Settings.class);
+    				startActivity(intent);
+				}
+    		});
+    		alertDialog.show();
+    	}
+    	
         // Set client to be running
         this.running = true;
-    }
-    
+    }    
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = new MenuInflater(this);
+		inflater.inflate(R.menu.main_options, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.main_exit:
+				// TODO
+				break;
+				
+			case R.id.main_settings:
+				Intent intent = new Intent(this, Settings.class);
+				startActivity(intent);
+				break;
+		}
+		
+		return true;
+	}
    
     @Override
     protected void onPause(){
