@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-  xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@+id/main_settings" android:title="@string/menu_settings" android:icon="@drawable/ic_menu_preferences"></item>
-    <item android:id="@+id/main_exit" android:title="@string/menu_exit" android:icon="@drawable/ic_menu_close_clear_cancel"></item>
+  xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@+id/main_settings" android:title="@string/menu_settings" android:icon="@drawable/zz_ic_menu_preferences"></item>
+    <item android:id="@+id/main_exit" android:title="@string/menu_exit" android:icon="@drawable/zz_ic_menu_close_clear_cancel"></item>
     
     
 </menu>
