@@ -12,6 +12,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import android.util.Log;
 import informatikforum.chatbox.business.Informant;
+import informatikforum.chatbox.dao.SmileyData;
 import informatikforum.chatbox.entity.Message;
 import informatikforum.chatbox.entity.Smiley;
 import informatikforum.chatbox.gui.gif.AnimatedGifDrawable;
@@ -72,8 +73,8 @@ public class TCPWorkerThread extends Thread{
 
 					// Add smileys to buffering list..
 					for(Smiley s : m.getSmileys().values()){
-						if(!informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().containsKey(s.getImageId())){
-							smileyIds.add(s.getImageId());
+						if(!informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().containsKey(SmileyData.getInstance().getFileIdForName(s.getName()))){
+							smileyIds.add(SmileyData.getInstance().getFileIdForName(s.getName()));
 						}
 					}
 					
