@@ -129,7 +129,7 @@ public class MessageFormatter extends Application{
 					// First the UpdateListener.. Check, whether we already created one once for
 					// this smiley and this message. 
 
-					if(cd.getBufferedListeners().contains(tv.hashCode() + Integer.toString(SmileyData.getInstance().getFileIdForName(m.getSmileys().get(i).getName())))){
+					if(cd.getBufferedListeners().contains(tv.hashCode() + Integer.toString(SmileyData.getInstance().getFileIdForUrl(m.getSmileys().get(i).getUrl())))){
 
 						// If such an UpdateListener is alreay in use, it will do the work for us.
 						ul = null;
@@ -145,7 +145,7 @@ public class MessageFormatter extends Application{
 						};
 						
 						// Don't forget to add it to the buffered-list.
-						cd.getBufferedListeners().add(tv.hashCode() + Integer.toString(SmileyData.getInstance().getFileIdForName(m.getSmileys().get(i).getName())));
+						cd.getBufferedListeners().add(tv.hashCode() + Integer.toString(SmileyData.getInstance().getFileIdForUrl(m.getSmileys().get(i).getUrl())));
 					}
 					
 					// Check, whether we already have the appropriate AnimatedImageSpan..
@@ -157,7 +157,7 @@ public class MessageFormatter extends Application{
 						// BUT!!!!!!!!!
 						// Set new UpdateListener. This is done by directly approaching the AnimatedGifDrawable
 						// which was buffered (as all AnimatedImageSpans are only using them.
-						cd.getBufferedGifs().get(SmileyData.getInstance().getFileIdForName(m.getSmileys().get(i).getName())).addUpdateListener(ul);
+						cd.getBufferedGifs().get(SmileyData.getInstance().getFileIdForUrl(m.getSmileys().get(i).getUrl())).addUpdateListener(ul);
 					}
 					else{
 						
@@ -172,7 +172,7 @@ public class MessageFormatter extends Application{
 							
 						// Now for the AnimatedGifDrawable.. The MessageRetrieveService is responsible for
 						// fetching them, so we will have just to wait..
-						while(!cd.getBufferedGifs().containsKey(SmileyData.getInstance().getFileIdForName(m.getSmileys().get(i).getName()))){
+						while(!cd.getBufferedGifs().containsKey(SmileyData.getInstance().getFileIdForUrl(m.getSmileys().get(i).getUrl()))){
 							try {
 								synchronized(cd.getGifLock()){
 									cd.getGifLock().wait();
@@ -183,7 +183,7 @@ public class MessageFormatter extends Application{
 						}
 						
 						// Get the saved AnimatedGifDrawable and add the brand new UpdateListener (or null).
-						agd = cd.getBufferedGifs().get(SmileyData.getInstance().getFileIdForName(m.getSmileys().get(i).getName()));
+						agd = cd.getBufferedGifs().get(SmileyData.getInstance().getFileIdForUrl(m.getSmileys().get(i).getUrl()));
 						agd.addUpdateListener(ul);
 							
 						// Finally, create the new agd.

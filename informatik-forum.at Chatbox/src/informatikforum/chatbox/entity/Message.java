@@ -185,7 +185,7 @@ public class Message implements Comparable<Message>, Serializable{
 		
 		if(smileys != null){
 			for(Integer i: smileys.keySet()){
-				smileyString += "Smileyposition: " + i + ", Smileyname: " + smileys.get(i).getName() + "\n";
+				smileyString += "Smileyposition: " + i + ", Smileyname: " + smileys.get(i).getName() + ", Smileyurl: " + smileys.get(i).getUrl() + "\n";
 			}
 		}
 		smileyString = smileyString.trim();

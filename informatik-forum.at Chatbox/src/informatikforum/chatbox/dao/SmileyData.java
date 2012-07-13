@@ -235,12 +235,12 @@ public class SmileyData{
 	public List<Smiley> getAvailableSmileys(){
 		return new ArrayList<Smiley>(this.smileys.keySet());
 	}
-
-	public int getFileIdForName(String name){
-		List<Smiley> smileys = getAvailableSmileys();
+	
+	public int getFileIdForUrl(String url){
+			List<Smiley> smileys = getAvailableSmileys();
 		
 		for(Smiley s: smileys){
-			if(s.getName().equals(name)){
+			if(s.getUrl().equals(url)){
 				return this.smileys.get(s);
 			}
 		}

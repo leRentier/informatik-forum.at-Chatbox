@@ -73,8 +73,8 @@ public class TCPWorkerThread extends Thread{
 
 					// Add smileys to buffering list..
 					for(Smiley s : m.getSmileys().values()){
-						if(!informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().containsKey(SmileyData.getInstance().getFileIdForName(s.getName()))){
-							smileyIds.add(SmileyData.getInstance().getFileIdForName(s.getName()));
+						if(!informatikforum.chatbox.business.CommonData.getInstance().getBufferedGifs().containsKey(SmileyData.getInstance().getFileIdForUrl(s.getUrl()))){
+							smileyIds.add(SmileyData.getInstance().getFileIdForUrl(s.getUrl()));
 						}
 					}
 					
