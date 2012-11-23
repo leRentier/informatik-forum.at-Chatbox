@@ -193,8 +193,15 @@ public class MessageFormatter extends Application{
 						cd.getBufferedAnimatedImageSpannables().put(Long.toString(m.getId()) + Integer.toString(i), ais);
 					}
 					
-					// Set the span.. we are done!
-					ssb.setSpan(ais, i, i+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					// this dirty fix is required to make the app not crash if there is a smiley within a link
+					// TODO replace this fix by something better
+					try {
+						// Set the span.. we are done!
+						ssb.setSpan(ais, i, i+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					}
+					catch (Exception e) {
+						/* ignore (for now...) */
+					}
 					
 				}
 				else if(linkPositions.contains(i)){
