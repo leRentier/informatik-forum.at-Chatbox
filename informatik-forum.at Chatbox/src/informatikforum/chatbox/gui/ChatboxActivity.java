@@ -153,7 +153,8 @@ public class ChatboxActivity extends Activity implements ClientCallback{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 			case R.id.main_exit:
-				// TODO
+				stopService(new Intent(this, MessageRetrieveService.class));
+				finish();
 				break;
 				
 			case R.id.main_settings:

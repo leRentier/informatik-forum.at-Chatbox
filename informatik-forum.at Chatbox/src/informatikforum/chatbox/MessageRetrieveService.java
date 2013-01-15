@@ -56,6 +56,13 @@ public class MessageRetrieveService extends Service implements ServerCallback{
 	} 
 
 	@Override
+	public boolean onUnbind(Intent intent) {
+		serverStopService();
+		return super.onUnbind(intent);
+	}
+
+
+	@Override
 	public void serverStopService() {
 		
 		if(!this.serverIsRunning()){
