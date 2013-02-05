@@ -227,6 +227,7 @@ public class SmileyData{
 		smileys.put(new Smiley("*angst*",":angst:","http://www.informatik-forum.at/images/nb/smilies/angst.gif"), R.drawable.angst);
 		smileys.put(new Smiley("turbopoke",":turbopoke:","http://www.informatik-forum.at/images/nb/smilies/turbopoke.gif"), R.drawable.turbopoke);
 		smileys.put(new Smiley("tap forhead",":tapforhead:","http://www.informatik-forum.at/images/smilies/tapforhead.gif"), R.drawable.tapforhead);
+		smileys.put(new Smiley("trampolindb",":trampolindb:","http://www.informatik-forum.at/images/smilies/trampolindb.gif"), R.drawable.trampolindb);
 		
 		return smileys;
 	}
