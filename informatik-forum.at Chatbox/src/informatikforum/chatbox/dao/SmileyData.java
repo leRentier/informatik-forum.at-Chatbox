@@ -231,6 +231,8 @@ public class SmileyData{
 		smileys.put(new Smiley("nozwinker",":nozwinker:","http://www.informatik-forum.at/images/smilies/nozwinker.gif"), R.drawable.nozwinker);
 		smileys.put(new Smiley("multieek",":multieek:","http://www.informatik-forum.at/images/smilies/multieek.gif"), R.drawable.multieek);
 		smileys.put(new Smiley("multieek2",":multieek2:","http://www.informatik-forum.at/images/smilies/multieek2.gif"), R.drawable.multieek2);
+		smileys.put(new Smiley("turbo devil banana",":turbodb:","http://www.informatik-forum.at/images/smilies/turbo-devil-banana.gif"), R.drawable.turbo_devil_banana);
+		smileys.put(new Smiley("extreme turbo devil banana",":extremeturbodb:","http://www.informatik-forum.at/images/smilies/extreme-turbo-devil-banana.gif"), R.drawable.extreme_turbo_devil_banana);
 		
 		return smileys;
 	}
