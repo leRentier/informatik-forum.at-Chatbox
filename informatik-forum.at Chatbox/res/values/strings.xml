@@ -50,4 +50,6 @@
 	<string name="menu_settings">Settings</string>
 	<string name="menu_exit">Exit</string>
 	<string name="settings">Settings</string>
+	<string name="settings_ignorelist">Ignore list</string>
+	<string name="settings_ignorelist_summary">Comma-separated list of users to be ignored</string>
 </resources>

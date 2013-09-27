@@ -90,6 +90,10 @@ public class BusinessLogic {
 		return preferences.getString("settings_password", "");
 	}
 
+	public String[] getIgnoreList(){
+		return preferences.getString("settings_ignorelist", "").split(",");
+	}
+
 	public void openLink(String url) {
 		android.os.Message message = android.os.Message.obtain();
 		Bundle bundle = new Bundle();

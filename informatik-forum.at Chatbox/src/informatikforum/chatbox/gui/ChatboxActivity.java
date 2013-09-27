@@ -177,6 +177,7 @@ public class ChatboxActivity extends Activity implements ClientCallback{
     @Override
     protected void onResume(){
     	super.onResume();
+    	reloadMessages();
     	
     	this.running = true;
     }
@@ -216,10 +217,27 @@ public class ChatboxActivity extends Activity implements ClientCallback{
     	}
     }
 
+    private void reloadMessages(){
+    	maa.clear();
+    	this.newMessageIndex = 0;
+    	updateMessages();
+    }
+    
     private void updateMessages(){
 		ArrayList<Message> allMessages = cd.getMessages();
+		String[] ignoreList = bl.getIgnoreList();
+		
+messageLoop:
 		for(int i=this.newMessageIndex; i<allMessages.size(); i++){
-			maa.add(allMessages.get(i));
+			Message message = allMessages.get(i);
+			
+			for(String ignoredUser : ignoreList){
+				if(ignoredUser.trim().equalsIgnoreCase(message.getUser())){
+					continue messageLoop;
+				}
+			}
+			
+			maa.add(message);
 		}
 
 		

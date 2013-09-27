@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"><EditTextPreference android:title="@string/settings_username" android:key="settings_username" android:enabled="true"></EditTextPreference><EditTextPreference android:title="@string/settings_password" android:key="settings_password" android:enabled="true" android:password="true"></EditTextPreference>
+  <EditTextPreference android:summary="@string/settings_ignorelist_summary" android:key="settings_ignorelist" android:title="@string/settings_ignorelist"/>
     
     
     
