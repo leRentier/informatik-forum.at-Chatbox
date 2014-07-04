@@ -36,6 +36,7 @@
 	<string formatted="false" name="USER_PATTERN">%3Ca%20href%3D%5C%22member%5C%5C.php%5C%5C%3Fu%3D%5C%5Cd%2B%5C%22%3E(.*%3F)%3C%2Fa%3E</string>
 	<string formatted="false" name="TIMESTAMP_PATTERN">%2F%3E%5C%5Cs*%3C%2Fa%3E%5C%5Cs*%5C%5C%5B(.*%3F)%5C%5C%5D%5C%5Cs*%3C%2Fspan</string>
 	<string formatted="false" name="ID_PATTERN">%5C%5C%3Fccbloc%3D(.*%3F)%5C%22</string>
+	<string formatted="false" name="FORUM_CHARSET_NAME">Windows-1252</string>
 	<string formatted="false" name="EXCEPTION_LOGIN_FAILED">Login failed (probably username or password are wrong, or the site changed, as there were no signs of exceptions occuring.</string>
 	<string formatted="false" name="EXCEPTION_GETTING_CERTIFICATE_URL_FAILED">GET-method for the certificate URL failed with an exception.</string>
 	<string formatted="false" name="EXCEPTION_RETRIEVING_SOURCECODE">An Exception while trying to retrieve the source of the specified site occured.</string>
@@ -45,6 +46,7 @@
 	<string formatted="false" name="EXCEPTION_SECURITYTOKEN_NOT_FOUND">Could not find the securitytoken which is needed to perform any actions.</string>
 	<string formatted="false" name="EXCEPTION_POST_FAILED">Could not post the given message.</string>
 	<string formatted="false" name="EXCEPTION_POST_FAILED_RECEIVED_RESPONSE">Could not post the given message.. Server response was non-empty, which means, an error happened (probably not logged in?).</string>
+	<string formatted="false" name="EXCEPTION_ENCODING_FAILED_INVALID_UTF16">The string the encoder received is not valid UTF-16.</string>
 	<string name="settings_username">Username</string>
 	<string name="settings_password">Password</string>
 	<string name="menu_settings">Settings</string>
