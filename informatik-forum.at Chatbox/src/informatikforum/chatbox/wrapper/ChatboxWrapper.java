@@ -6,6 +6,8 @@ import informatikforum.chatbox.entity.Message;
 import informatikforum.chatbox.gui.MessageFormatter;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -197,8 +199,58 @@ public class ChatboxWrapper{
 		}
 	}
 
+	private String htmlEscapeUnencodableCharacters(String message) {
+		StringBuilder ret = new StringBuilder();
+		int highUnicodeChar = 0;
+		boolean awaitingLowSurrogate = false;
+
+		CharsetEncoder forumCharsetEncoder = Charset.forName(bl.getString(R.string.FORUM_CHARSET_NAME)).newEncoder();
+
+		for(char c : message.toCharArray()){
+			if(awaitingLowSurrogate){
+				if(Character.isLowSurrogate(c)){
+					highUnicodeChar |= (c - 0xDC00);
+					highUnicodeChar += 0x010000;
+
+					// append the XML character entity
+					ret.append("&#");
+					ret.append(highUnicodeChar);
+					ret.append(";");
+
+					// reset the surrogate pair state
+					highUnicodeChar = 0;
+					awaitingLowSurrogate = false;
+				}
+				else{
+					// leading surrogate not followed by trailing surrogate
+					throw new WrapperException(bl.getString(R.string.EXCEPTION_ENCODING_FAILED_INVALID_UTF16));
+				}
+			}
+			else if(Character.isHighSurrogate(c)){
+				highUnicodeChar = (c - 0xD800) << 10;
+				awaitingLowSurrogate = true;
+			}
+			else if(Character.isLowSurrogate(c)){
+				// trailing surrogate following something that isn't a leading surrogate
+				throw new WrapperException(bl.getString(R.string.EXCEPTION_ENCODING_FAILED_INVALID_UTF16));
+			}
+			else if(forumCharsetEncoder.canEncode(c)){
+				// forum's encoding supports it directly
+				ret.append(c);
+			}
+			else{
+				// XML character entity
+				ret.append("&#");
+				ret.append((int)c);
+				ret.append(";");
+			}
+		}
+
+		return ret.toString();
+	}
 	
 	public synchronized void postMessage(String encodedMessage) throws WrapperException{
+		String escapedEncodedMessage = htmlEscapeUnencodableCharacters(encodedMessage);
 		try {
 			HttpPost httpost = new HttpPost(bl.getString(R.string.POSTMESSAGE_URL));
 			
@@ -206,13 +258,13 @@ public class ChatboxWrapper{
 			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		
 			nvps.add(new BasicNameValuePair("do", "cb_postnew"));
-			nvps.add(new BasicNameValuePair("vsacb_newmessage", encodedMessage));
+			nvps.add(new BasicNameValuePair("vsacb_newmessage", escapedEncodedMessage));
 			nvps.add(new BasicNameValuePair("do", "cb_postnew"));
 			nvps.add(new BasicNameValuePair("color", "Black"));
 			nvps.add(new BasicNameValuePair("securitytoken", reloadSecurityToken()));
 			nvps.add(new BasicNameValuePair("s", ""));
 
-			httpost.setEntity(new UrlEncodedFormEntity(nvps));
+			httpost.setEntity(new UrlEncodedFormEntity(nvps, bl.getString(R.string.FORUM_CHARSET_NAME)));
 			
 			// Execute the post.
 			Log.i(TAG, "Posting message : " + encodedMessage);	
